@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useContext } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -6,6 +6,7 @@ import {
   useLoadScript,
 } from "@react-google-maps/api";
 import LocatorButton from "./LocatorButton"; // Ensure this component is correctly imported
+import MapContext from "./MapContext";
 
 const containerStyle = {
   width: "100vw",
@@ -20,9 +21,8 @@ const initialCenter = {
 const API_KEY = "AIzaSyBLtwzy9EsFK_EqMlOoa_dB5TVGkSe4ggU";
 
 function MapContainer() {
-  const [map, setMap] = useState(null);
-  const [center, setCenter] = useState(initialCenter);
-  const [markers, setMarkers] = useState([]);
+  const { map, setMap, markers, setMarkers, center, setCenter } =
+    useContext(MapContext);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
@@ -51,7 +51,7 @@ function MapContainer() {
           <Marker key={idx} position={marker} />
         ))}
       </GoogleMap>
-      {map && <LocatorButton map={map} />}
+      {map && <LocatorButton />}
     </LoadScript>
   );
 }

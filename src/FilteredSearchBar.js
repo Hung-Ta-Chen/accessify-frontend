@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./index.css";
+import MapContext from "./MapContext";
 
-function FilteredSearchBar({ map, setMarkers }) {
+function FilteredSearchBar() {
+  const { map, setMap, markers, setMarkers, center, setCenter } =
+    useContext(MapContext);
+
   const [checkedBoxes, setcheckedBoxes] = useState({
     parking: false,
     restaurant: false,

@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Marker, Circle } from "@react-google-maps/api";
+import MapContext from "./MapContext";
 
-const LocatorButton = ({ map }) => {
+const LocatorButton = () => {
+  const { map, setMap, markers, setMarkers, center, setCenter } =
+    useContext(MapContext);
+
   const [userLocation, setUserLocation] = useState(null);
   const [accuracyRadius, setAccuracyRadius] = useState(0);
 
@@ -16,7 +20,7 @@ const LocatorButton = ({ map }) => {
           };
           setUserLocation(location);
           setAccuracyRadius(position.coords.accuracy);
-          map.setCenter(location);
+          setCenter(location);
         },
         () => {
           alert("Error: The Geolocation service failed.");
