@@ -87,8 +87,8 @@ function FilteredSearchBar() {
                   scaledSize: new window.google.maps.Size(40, 40), // Scale the icon
                 },
                 id: place.place_id,
-                googleRating: place.rating,
-                googleRatingsCount: place.user_ratings_total,
+                googleRating: place.rating || 0,
+                googleRatingsCount: place.user_ratings_total || 0,
               }));
 
               allMarkers = allMarkers.concat(newMarkers);

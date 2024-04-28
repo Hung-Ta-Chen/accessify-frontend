@@ -92,3 +92,98 @@ code {
   margin-right: -130px;
   margin-left: -150px;
 }
+
+.info-window-content {
+  width: 250px;
+  min-height: 200px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.info-window-buttons {
+  display: flex;
+  justify-content: space-between;  /* Space out the buttons */
+  margin-top: 30px;  /* Space above the buttons */
+}
+
+.info-window-buttons button {
+  flex: 1;  /* Make buttons expand to fill space */
+  margin: 0 5px;  /* Space between buttons */
+}
+
+/* AddReviewModal and ReviewsModal styling */
+.ReactModal__Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75); /* Dim the background */
+  z-index: 1000; /* Higher than anything else in the app */
+}
+
+.ReactModal__Content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  width: auto; /* Adjust width as necessary */
+  max-width: 600px; /* Maximum width */
+  height: auto; /* Adjust height as necessary */
+  max-height: 80vh; /* Maximum height */
+}
+
+/* If you want a scrollbar within the reviews modal */
+.reviews-modal-content {
+  max-height: 400px; /* Adjust to suitable height */
+  overflow-y: auto; /* Enables scrollbar for overflow content */
+}
+
+/* Form field styles */
+
+.add-review-modal select {
+  width: 100%; /* Full width within the modal */
+  margin-bottom: 10px; /* Spacing between fields */
+}
+
+.add-review-modal input {
+  width: 98%; /* Full width within the modal */
+  margin-bottom: 10px; /* Spacing between fields */
+}
+
+.add-review-modal textarea {
+  width: 98%; /* Full width within the modal */
+  margin-bottom: 10px; /* Spacing between fields */
+  height: 150px
+}
+
+/* Button styles */
+.add-review-modal button {
+  margin-top: 10px; 
+  margin-right: 10px;
+  padding: 10px 20px; /* Padding for clickable area */
+  border: none; /* No border for buttons */
+  background-color: #4285F4; /* Google blue color for consistency */
+  color: white;
+  cursor: pointer;
+}
+
+/* Individual review container styles */
+.review {
+  border-bottom: 1px solid #ccc; /* Separator between reviews */
+  padding: 10px; /* Padding around review content */
+  margin-bottom: 10px; /* Spacing between reviews */
+}
+
+

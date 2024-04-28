@@ -3,7 +3,7 @@ import {
   GoogleMap,
   LoadScript,
   Marker,
-  useLoadScript,
+  InfoWindow,
 } from "@react-google-maps/api";
 import LocatorButton from "./LocatorButton"; // Ensure this component is correctly imported
 import MapContext from "./MapContext";
@@ -20,9 +20,11 @@ const initialCenter = {
 
 const API_KEY = "AIzaSyBLtwzy9EsFK_EqMlOoa_dB5TVGkSe4ggU";
 
-function MapContainer() {
+function MapContainer({ onAddReview, onDisplayReviews }) {
   const { map, setMap, markers, setMarkers, center, setCenter } =
     useContext(MapContext);
+
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
@@ -31,6 +33,7 @@ function MapContainer() {
 
   // Function to handle map clicks and add markers
   const onMapClick = (event) => {
+    /*
     setMarkers((currentMarkers) => [
       ...currentMarkers,
       {
@@ -44,6 +47,16 @@ function MapContainer() {
         type: "",
       },
     ]);
+    */
+  };
+
+  const onMarkerClick = (marker) => {
+    if (marker.id) {
+      // Fetch the information for backend
+
+      // Set the selected marker
+      setSelectedMarker(marker);
+    }
   };
 
   return (
@@ -62,8 +75,36 @@ function MapContainer() {
             position={{ lat: marker.lat, lng: marker.lng }}
             title={marker.title}
             icon={marker.icon}
+            onClick={(event) => onMarkerClick(marker)}
           />
         ))}
+
+        {/* Load the review of the selected marker */}
+        {selectedMarker && (
+          <InfoWindow
+            position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
+            onCloseClick={(event) => setSelectedMarker(null)}
+          >
+            <div className="info-window-content">
+              <h3>{selectedMarker.title}</h3>
+              <p>Google Rating: {selectedMarker.googleRating} Stars</p>
+              <p>Wheelchair Access Rating: </p>
+              <p>Restroom Access Rating: </p>
+              <p>Overall Rating: </p>
+              <p>User Review Count: </p>
+              <p>Pros: </p>
+              <p>Cons: </p>
+              <div className="info-window-buttons">
+                <button onClick={() => onDisplayReviews(selectedMarker)}>
+                  Display Reviews
+                </button>
+                <button onClick={() => onAddReview(selectedMarker)}>
+                  Add Review
+                </button>
+              </div>
+            </div>
+          </InfoWindow>
+        )}
       </GoogleMap>
       {map && <LocatorButton />}
     </LoadScript>
