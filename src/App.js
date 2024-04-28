@@ -31,11 +31,42 @@ function App() {
     setAddReviewModalIsOpen(true);
   };
 
-  const handleOpenReviewsModal = (marker) => {
+  const handleOpenReviewsModal = async (marker) => {
     // Fetch or set reviews for the selected marker here
     // Communicate with backend
 
-    setReviewsModalIsOpen(true);
+    try {
+      // Fetch the place by place_id to get the database ID
+      const placeResponse = await fetch(
+        `${SERVER_URL}/api/places/?place_id=${marker.id}`
+      );
+      if (!placeResponse.ok) {
+        setReviews([]);
+      }
+
+      const places = await placeResponse.json();
+      if (places.length === 0) {
+        alert("No review found");
+        setReviews([]); // Exit if no place is found
+      } else {
+        // Assuming the first result is the correct one
+        const placeId = places[0].id;
+
+        // Fetch reviews for the found place ID
+        const reviewResponse = await fetch(
+          `${SERVER_URL}/api/reviews/?place=${placeId}`
+        );
+        if (!reviewResponse.ok) throw new Error("Failed to fetch reviews");
+
+        const reviewsData = await reviewResponse.json();
+        setReviews(reviewsData); // Set the fetched reviews into state
+      }
+
+      setReviewsModalIsOpen(true); // Open the reviews modal
+    } catch (error) {
+      console.error("Error fetching place or reviews:", error);
+      alert("Error fetching place or reviews");
+    }
   };
 
   const handleCloseAddReviewModal = () => {

@@ -16,18 +16,18 @@ function ReviewsModal({ isOpen, onRequestClose, reviews }) {
           {reviews.map((review, index) => (
             <div className="review" key={index}>
               <div className="review-header">
-                <span className="username">{review.username}</span>
-                <span className="ratings">
-                  Wheelchair: {review.wheelchairRating} Stars
-                </span>
-                <span className="ratings">
-                  Restroom: {review.restroomRating} Stars
-                </span>
-                <span className="ratings">
-                  Overall: {review.overallRating} Stars
-                </span>
+                <p className="username">Username: {review.username}</p>
+                <p className="ratings">
+                  Wheelchair: {review.wheelchair_rating} Stars
+                </p>
+                <p className="ratings">
+                  Restroom: {review.restroom_rating} Stars
+                </p>
+                <p className="ratings">
+                  Overall: {review.overall_rating} Stars
+                </p>
               </div>
-              <p className="comments">{review.comments}</p>
+              <p className="comments">Comment: {review.comment}</p>
             </div>
           ))}
         </div>
