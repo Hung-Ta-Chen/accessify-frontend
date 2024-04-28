@@ -57,70 +57,86 @@ function FilteredSearchBar() {
     // Check if the map is loaded
     if (!map) return;
 
-    if (locationFormat === "latlng") {
-      // Do something
-      const geocoder = new window.google.maps.Geocoder();
-    } else {
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address: searchText }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          const location = results[0].geometry.location;
-          setCenter(location);
+    const geocoder = new window.google.maps.Geocoder();
+    const handleResults = (location) => {
+      setCenter(location);
 
-          const service = new window.google.maps.places.PlacesService(map);
-          const filterTypes = Object.keys(checkedBoxes).filter(
-            (key) => checkedBoxes[key]
-          );
-          let allMarkers = [];
+      const service = new window.google.maps.places.PlacesService(map);
+      const filterTypes = Object.keys(checkedBoxes).filter(
+        (key) => checkedBoxes[key]
+      );
+      let allMarkers = [];
 
-          // Use recursive function instead of for-loop to avoid exceeding rate limit
-          const searchPlaces = (index) => {
-            if (index < filterTypes.length) {
-              const request = {
-                location: location,
-                radius: distance * 1000,
-                type: filterTypes[index],
-              };
-
-              service.nearbySearch(request, (results, status, pagination) => {
-                if (
-                  status === window.google.maps.places.PlacesServiceStatus.OK
-                ) {
-                  const newMarkers = results.map((place) => ({
-                    lat: place.geometry.location.lat(),
-                    lng: place.geometry.location.lng(),
-                    type: filterTypes[index],
-                    title: place.name,
-                    icon: {
-                      url: iconMap[index],
-                      scaledSize: new window.google.maps.Size(40, 40), // Scale the icon
-                    },
-                    id: place.place_id,
-                    googleRating: place.rating,
-                    googleRatingsCount: place.user_ratings_total,
-                  }));
-
-                  allMarkers = allMarkers.concat(newMarkers);
-                  if (pagination && pagination.hasNextPage) {
-                    // If more results are available, keep fetching
-                    setTimeout(() => pagination.nextPage(), 100); // respect API limit
-                  } else {
-                    // No more results, process next type
-                    searchPlaces(index + 1); // Recurse to search next type
-                  }
-                } else {
-                  // Proceed to next type even if current search fails
-                  searchPlaces(index + 1);
-                }
-              });
-            } else {
-              // Set the combined markers after searching all filter types
-              setMarkers(allMarkers);
-            }
+      // Use recursive function instead of for-loop to avoid exceeding rate limit
+      const searchPlaces = (index) => {
+        if (index < filterTypes.length) {
+          const request = {
+            location: location,
+            radius: distance * 1000,
+            type: filterTypes[index],
           };
 
-          // Start searching from the first type
-          searchPlaces(0);
+          service.nearbySearch(request, (results, status, pagination) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+              const newMarkers = results.map((place) => ({
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+                title: place.name,
+                icon: {
+                  url: iconMap[index],
+                  scaledSize: new window.google.maps.Size(40, 40), // Scale the icon
+                },
+                id: place.place_id,
+                googleRating: place.rating,
+                googleRatingsCount: place.user_ratings_total,
+              }));
+
+              allMarkers = allMarkers.concat(newMarkers);
+              if (pagination && pagination.hasNextPage) {
+                // If more results are available, keep fetching
+                setTimeout(() => pagination.nextPage(), 200); // respect API limit
+              } else {
+                // No more results, process next type
+                searchPlaces(index + 1); // Recurse to search next type
+              }
+            } else {
+              // Proceed to next type even if current search fails
+              searchPlaces(index + 1);
+            }
+          });
+        } else {
+          // Set all the combined markers after searching all filter types
+          // Don't use location.lat, location.lng!!!
+          allMarkers.push({
+            lat: location.lat(),
+            lng: location.lng(),
+            title: "Target Location",
+            icon: "",
+            id: null,
+            googleRating: 0,
+            googleRatingsCount: 0,
+          });
+          setMarkers(allMarkers);
+        }
+      };
+
+      // Start searching from the first type
+      searchPlaces(0);
+    };
+
+    if (locationFormat === "latlng") {
+      const latLng = searchText.split(",").map(Number);
+      if (latLng.length === 2 && !isNaN(latLng[0]) && !isNaN(latLng[1])) {
+        handleResults(new window.google.maps.LatLng(latLng[0], latLng[1]));
+      } else {
+        alert("Invalid latitude and longitude format.");
+      }
+    } else {
+      geocoder.geocode({ address: searchText }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          handleResults(results[0].geometry.location);
+        } else {
+          alert("Geocoding failed due to: " + status);
         }
       });
     }
