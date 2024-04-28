@@ -82,7 +82,7 @@ function FilteredSearchBar() {
                 type: filterTypes[index],
               };
 
-              service.nearbySearch(request, (results, status) => {
+              service.nearbySearch(request, (results, status, pagination) => {
                 if (
                   status === window.google.maps.places.PlacesServiceStatus.OK
                 ) {
@@ -101,7 +101,13 @@ function FilteredSearchBar() {
                   }));
 
                   allMarkers = allMarkers.concat(newMarkers);
-                  searchPlaces(index + 1); // Recurse to search next type
+                  if (pagination && pagination.hasNextPage) {
+                    // If more results are available, keep fetching
+                    setTimeout(() => pagination.nextPage(), 100); // respect API limit
+                  } else {
+                    // No more results, process next type
+                    searchPlaces(index + 1); // Recurse to search next type
+                  }
                 } else {
                   // Proceed to next type even if current search fails
                   searchPlaces(index + 1);
