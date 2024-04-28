@@ -19,6 +19,7 @@ const initialCenter = {
 };
 
 const API_KEY = "AIzaSyBLtwzy9EsFK_EqMlOoa_dB5TVGkSe4ggU";
+const SERVER_URL = "http://127.0.0.1:8000";
 
 function MapContainer({ onAddReview, onDisplayReviews }) {
   const {
@@ -31,6 +32,13 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
     selectedMarker,
     setSelectedMarker,
   } = useContext(MapContext);
+
+  const [infoWindowData, setInfoWindowData] = useState({
+    average_wheelchair_access_rating: 0,
+    average_restroom_rating: 0,
+    average_overall_rating: 0,
+    user_review_count: 0,
+  });
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
@@ -56,11 +64,27 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
     */
   };
 
-  const onMarkerClick = (marker) => {
+  const onMarkerClick = async (marker) => {
     if (marker.id) {
       // Fetch the information for backend
+      try {
+        const placeId = marker.id;
+
+        // Fetch reviews for the found place ID
+        const statsResponse = await fetch(
+          `${SERVER_URL}/api/places/${placeId}/stats/`
+        );
+        if (!statsResponse.ok) throw new Error("Failed to fetch reviews");
+
+        const statsData = await statsResponse.json();
+        setInfoWindowData(statsData);
+      } catch (error) {
+        console.error("Error fetching place or reviews:", error);
+        alert("Error fetching place or reviews");
+      }
 
       // Set the selected marker
+
       setSelectedMarker(marker);
     }
   };
@@ -94,10 +118,18 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
             <div className="info-window-content">
               <h3>{selectedMarker.title}</h3>
               <p>Google Rating: {selectedMarker.googleRating} Stars</p>
-              <p>Wheelchair Access Rating: </p>
-              <p>Restroom Access Rating: </p>
-              <p>Overall Rating: </p>
-              <p>User Review Count: </p>
+              <p>
+                Wheelchair Access Rating:{" "}
+                {infoWindowData.average_wheelchair_access_rating} Stars
+              </p>
+              <p>
+                Restroom Access Rating: {infoWindowData.average_restroom_rating}{" "}
+                Stars
+              </p>
+              <p>
+                Overall Rating: {infoWindowData.average_overall_rating} Stars
+              </p>
+              <p>User Review Count: {infoWindowData.user_review_count}</p>
               <p>Pros: </p>
               <p>Cons: </p>
               <div className="info-window-buttons">
