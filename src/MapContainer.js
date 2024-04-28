@@ -21,10 +21,16 @@ const initialCenter = {
 const API_KEY = "AIzaSyBLtwzy9EsFK_EqMlOoa_dB5TVGkSe4ggU";
 
 function MapContainer({ onAddReview, onDisplayReviews }) {
-  const { map, setMap, markers, setMarkers, center, setCenter } =
-    useContext(MapContext);
-
-  const [selectedMarker, setSelectedMarker] = useState(null);
+  const {
+    map,
+    setMap,
+    markers,
+    setMarkers,
+    center,
+    setCenter,
+    selectedMarker,
+    setSelectedMarker,
+  } = useContext(MapContext);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {

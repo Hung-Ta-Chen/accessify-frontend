@@ -12,6 +12,8 @@ const initialCenter = {
   lng: 150.644,
 };
 
+const SERVER_URL = "http://127.0.0.1:8000";
+
 // Bind the modals to the app
 ReactModal.setAppElement("#root");
 
@@ -19,6 +21,7 @@ function App() {
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState(initialCenter);
   const [markers, setMarkers] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
   const [addReviewModalIsOpen, setAddReviewModalIsOpen] = useState(false);
   const [reviewsModalIsOpen, setReviewsModalIsOpen] = useState(false);
@@ -31,6 +34,7 @@ function App() {
   const handleOpenReviewsModal = (marker) => {
     // Fetch or set reviews for the selected marker here
     // Communicate with backend
+
     setReviewsModalIsOpen(true);
   };
 
@@ -42,11 +46,82 @@ function App() {
     setReviewsModalIsOpen(false);
   };
 
-  const handleAddReviewSubmit = (reviewData) => {
-    // Submit your review data to your backend or state management
-    // Communicate with backend
-    // Close the modal
-    handleCloseAddReviewModal();
+  // Function for posting reviews to DB
+  const handleAddReviewSubmit = async (reviewData) => {
+    try {
+      // Check if the place exists or add it
+      let placeResponse = await fetch(
+        SERVER_URL + `/api/places/?place_id=${selectedMarker.id}`
+      );
+
+      let places = await placeResponse.json();
+
+      let placeId;
+      if (places.length === 0) {
+        // Place does not exist, create it
+        console.log(
+          JSON.stringify({
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: {
+              name: selectedMarker.title,
+              lat: selectedMarker.lat,
+              lng: selectedMarker.lng,
+              place_id: selectedMarker.id,
+              place_type: selectedMarker.type,
+            },
+          })
+        );
+        placeResponse = await fetch(SERVER_URL + "/api/places/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: selectedMarker.title,
+            lat: selectedMarker.lat,
+            lng: selectedMarker.lng,
+            place_id: selectedMarker.id,
+            place_type: selectedMarker.type,
+          }),
+        });
+
+        if (!placeResponse.ok) throw new Error("Failed to create place");
+        const newPlace = await placeResponse.json();
+        placeId = newPlace.id;
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } else {
+        // Place exists
+        placeId = places[0].id;
+      }
+
+      // Submit the review
+      const reviewResponse = await fetch(SERVER_URL + "/api/reviews/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          place: placeId,
+          username: reviewData.username,
+          wheelchair_rating: reviewData.wheelchairRating,
+          restroom_rating: reviewData.restroomRating,
+          overall_rating: reviewData.overallRating,
+          comment: reviewData.comments,
+        }),
+      });
+      if (reviewResponse.ok) {
+        alert("Review successfully added!");
+        handleCloseAddReviewModal();
+      } else {
+        throw new Error("Failed to submit review");
+      }
+    } catch (error) {
+      console.error("Failed to handle review submission:", error);
+      alert("Error handling review submission");
+    }
   };
 
   return (
@@ -58,6 +133,8 @@ function App() {
         setMarkers,
         center,
         setCenter,
+        selectedMarker,
+        setSelectedMarker,
       }}
     >
       <div className="App">

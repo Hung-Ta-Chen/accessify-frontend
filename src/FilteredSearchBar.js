@@ -10,8 +10,16 @@ const iconMap = {
 };
 
 function FilteredSearchBar() {
-  const { map, setMap, markers, setMarkers, center, setCenter } =
-    useContext(MapContext);
+  const {
+    map,
+    setMap,
+    markers,
+    setMarkers,
+    center,
+    setCenter,
+    selectedMarker,
+    setSelectedMarker,
+  } = useContext(MapContext);
 
   const [checkedBoxes, setcheckedBoxes] = useState({
     parking: true,
@@ -89,6 +97,7 @@ function FilteredSearchBar() {
                 id: place.place_id,
                 googleRating: place.rating || 0,
                 googleRatingsCount: place.user_ratings_total || 0,
+                type: filterTypes[index],
               }));
 
               allMarkers = allMarkers.concat(newMarkers);

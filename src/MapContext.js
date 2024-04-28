@@ -8,6 +8,8 @@ const MapContext = createContext({
   setMarkers: () => {},
   center: null,
   setCenter: () => {},
+  selectedMarker: null,
+  setSelectedMarker: () => {},
 });
 
 export default MapContext;
