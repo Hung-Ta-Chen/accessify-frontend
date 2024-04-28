@@ -52,6 +52,10 @@ code {
   font-size: 15px; /* Consistent font size with Google Maps */
 }
 
+.distance-toggle {
+  margin-right: 5px;
+}
+
 .search-input {
   margin-left: 5px;
   margin-right: 5px;

@@ -33,7 +33,16 @@ function MapContainer() {
   const onMapClick = (event) => {
     setMarkers((currentMarkers) => [
       ...currentMarkers,
-      { lat: event.latLng.lat(), lng: event.latLng.lng() },
+      {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+        title: "Clicked",
+        icon: "",
+        id: "test",
+        googleRating: 0,
+        googleRatingsCount: 0,
+        type: "",
+      },
     ]);
   };
 
@@ -48,7 +57,12 @@ function MapContainer() {
       >
         {/* Load map components here */}
         {markers.map((marker, idx) => (
-          <Marker key={idx} position={marker} />
+          <Marker
+            key={idx}
+            position={{ lat: marker.lat, lng: marker.lng }}
+            title={marker.title}
+            icon={marker.icon}
+          />
         ))}
       </GoogleMap>
       {map && <LocatorButton />}
