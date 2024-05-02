@@ -18,7 +18,7 @@ const initialCenter = {
   lng: 150.644,
 };
 
-const API_KEY = "AIzaSyBLtwzy9EsFK_EqMlOoa_dB5TVGkSe4ggU";
+const MAPS_API_KEY = process.env.REACT_APP_MAPS_API_KEY;
 const SERVER_URL = "http://127.0.0.1:8000";
 
 function MapContainer({ onAddReview, onDisplayReviews }) {
@@ -90,7 +90,7 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
   };
 
   return (
-    <LoadScript googleMapsApiKey={API_KEY} libraries={["places"]}>
+    <LoadScript googleMapsApiKey={MAPS_API_KEY} libraries={["places"]}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -117,17 +117,31 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
           >
             <div className="info-window-content">
               <h3>{selectedMarker.title}</h3>
-              <p>Google Rating: {selectedMarker.googleRating} Stars</p>
+              <p>Google Map Rating: {selectedMarker.googleRating} Stars</p>
               <p>
                 Wheelchair Access Rating:{" "}
-                {infoWindowData.average_wheelchair_access_rating} Stars
-              </p>
-              <p>
-                Restroom Access Rating: {infoWindowData.average_restroom_rating}{" "}
+                {Number.isInteger(
+                  infoWindowData.average_wheelchair_access_rating
+                )
+                  ? infoWindowData.average_wheelchair_access_rating
+                  : infoWindowData.average_wheelchair_access_rating.toFixed(
+                      1
+                    )}{" "}
                 Stars
               </p>
               <p>
-                Overall Rating: {infoWindowData.average_overall_rating} Stars
+                Restroom Access Rating:{" "}
+                {Number.isInteger(infoWindowData.average_restroom_rating)
+                  ? infoWindowData.average_restroom_rating
+                  : infoWindowData.average_restroom_rating.toFixed(1)}{" "}
+                Stars
+              </p>
+              <p>
+                Overall Rating:{" "}
+                {Number.isInteger(infoWindowData.average_overall_rating)
+                  ? infoWindowData.average_overall_rating
+                  : infoWindowData.average_overall_rating.toFixed(1)}{" "}
+                Stars
               </p>
               <p>User Review Count: {infoWindowData.user_review_count}</p>
               <p>Pros: </p>
