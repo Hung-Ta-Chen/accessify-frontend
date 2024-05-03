@@ -30,7 +30,8 @@ function FilteredSearchBar() {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [distance, setDistance] = useState(5);
-  const [locationFormat, setLocationFormat] = useState("latlng");
+  const [searchMode, setSearchMode] = useState("lite");
+  const [locationFormat, setLocationFormat] = useState("addr");
   const [searchText, setSearchText] = useState("");
   const [nextPageToken, setNextPageToken] = useState(null); // For pagination
 
@@ -46,6 +47,10 @@ function FilteredSearchBar() {
 
   const onDistanceChange = (event) => {
     setDistance(event.target.value);
+  };
+
+  const onSearchModeChange = (event) => {
+    setSearchMode(event.target.value);
   };
 
   const onLocationFormatChange = (event) => {
@@ -101,7 +106,13 @@ function FilteredSearchBar() {
               }));
 
               allMarkers = allMarkers.concat(newMarkers);
-              if (pagination && pagination.hasNextPage) {
+              // Check if pagination is available and if the next page is available
+              // Also use search mode flag to control pagination
+              if (
+                searchMode == "full" &&
+                pagination &&
+                pagination.hasNextPage
+              ) {
                 // If more results are available, keep fetching
                 setTimeout(() => pagination.nextPage(), 200); // respect API limit
               } else {
@@ -154,7 +165,7 @@ function FilteredSearchBar() {
   return (
     <div className="search-bar">
       <button onClick={toggleDropdown} className="dropdown-button">
-        Type Filters
+        Filters
       </button>
       <select
         onChange={onDistanceChange}
@@ -176,6 +187,14 @@ function FilteredSearchBar() {
         onChange={onSearchTextChange}
         value={searchText}
       />
+      <select
+        onChange={onSearchModeChange}
+        value={searchMode}
+        className="search-mode-toggle"
+      >
+        <option value="lite">Lite</option>
+        <option value="full">Full</option>
+      </select>
       <button onClick={onSearch} className="search-button">
         Search
       </button>
