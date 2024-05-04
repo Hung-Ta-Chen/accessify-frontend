@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import MapContainer from "./MapContainer";
 import Header from "./Header";
@@ -30,6 +30,9 @@ function App() {
   const [center, setCenter] = useState(initialCenter);
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const geocoderRef = useRef(null);
+  const placesServiceRef = useRef(null);
+
   // Setting in search bar
   const [checkedFilters, setCheckedFilters] = useState({
     parking: true,
@@ -269,6 +272,8 @@ function App() {
         setDistance,
         searchMode,
         setSearchMode,
+        geocoderRef,
+        placesServiceRef,
       }}
     >
       <div className="App">

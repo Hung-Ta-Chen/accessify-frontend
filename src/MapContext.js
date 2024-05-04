@@ -18,6 +18,8 @@ const MapContext = createContext({
   setDistance: () => {},
   searchMode: null,
   setSearchMode: () => {},
+  geocoderRef: null,
+  placesServiceRef: null,
 });
 
 export default MapContext;

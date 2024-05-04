@@ -40,6 +40,8 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
     setDistance,
     searchMode,
     setSearchMode,
+    geocoderRef,
+    placesServiceRef,
   } = useContext(MapContext);
 
   const [infoWindowData, setInfoWindowData] = useState({
@@ -52,6 +54,16 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
     setMap(mapInstance);
+    // Initialize the geocoder
+    if (!geocoderRef.current) {
+      geocoderRef.current = new window.google.maps.Geocoder();
+    }
+    // Initialize the places service
+    if (!placesServiceRef.current) {
+      placesServiceRef.current = new window.google.maps.places.PlacesService(
+        mapInstance
+      );
+    }
   };
 
   // Function to handle map clicks and add markers

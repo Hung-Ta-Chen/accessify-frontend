@@ -2,13 +2,6 @@ import React, { useState, useContext } from "react";
 import "./index.css";
 import MapContext from "./MapContext";
 
-const iconMap = {
-  parking: "http://maps.gstatic.com/mapfiles/ms2/micons/parkinglot.png",
-  restaurant: "http://maps.gstatic.com/mapfiles/ms2/micons/restaurant.png",
-  park: "http://maps.gstatic.com/mapfiles/ms2/micons/tree.png",
-  hospital: "http://maps.gstatic.com/mapfiles/ms2/micons/hospitals.png",
-};
-
 function FilteredSearchBar({ handleNearbySearch }) {
   const {
     map,
@@ -27,14 +20,12 @@ function FilteredSearchBar({ handleNearbySearch }) {
     setDistance,
     searchMode,
     setSearchMode,
+    geocoderRef,
+    placesServiceRef,
   } = useContext(MapContext);
 
-  //const [showDropdown, setShowDropdown] = useState(false);
-  //const [distance, setDistance] = useState(5);
-  //const [searchMode, setSearchMode] = useState("lite");
   const [locationFormat, setLocationFormat] = useState("addr");
   const [searchText, setSearchText] = useState("");
-  //const [nextPageToken, setNextPageToken] = useState(null); // For pagination
 
   const onFilterChange = (event) => {
     const { value, checked } = event.target;
@@ -71,11 +62,11 @@ function FilteredSearchBar({ handleNearbySearch }) {
     // Check if the map is loaded
     if (!map) return;
 
-    const geocoder = new window.google.maps.Geocoder();
+    const geocoder = geocoderRef.current;
     const handleResults = (location) => {
       setCenter(location);
 
-      const service = new window.google.maps.places.PlacesService(map);
+      const service = placesServiceRef.current;
       const filterTypes = Object.keys(checkedFilters).filter(
         (key) => checkedFilters[key]
       );
