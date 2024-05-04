@@ -4,6 +4,7 @@ import {
   LoadScript,
   Marker,
   InfoWindow,
+  Circle,
 } from "@react-google-maps/api";
 import LocatorButton from "./LocatorButton"; // Ensure this component is correctly imported
 import MapContext from "./MapContext";
@@ -53,9 +54,12 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
     user_review_count: 0,
   });
 
+  const [accuracyRadius, setAccuracyRadius] = useState(0);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
   // Effect for setting up geolocation
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (mapLoaded && navigator.geolocation) {
       navigator.geolocation.watchPosition(
         (position) => {
           // Set the user location to the changed position
@@ -63,20 +67,22 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
+          setAccuracyRadius(position.coords.accuracy);
         },
         (error) => {
           console.error("Geolocation error:", error);
         },
         { enableHighAccuracy: true }
       );
-    } else {
+    } else if (mapLoaded) {
       alert("Geolocation is not supported by your browser.");
     }
-  }, []);
+  }, [mapLoaded, setUserLocation]);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
     setMap(mapInstance);
+    setMapLoaded(true);
     // Initialize the geocoder
     if (!geocoderRef.current) {
       geocoderRef.current = new window.google.maps.Geocoder();
@@ -154,21 +160,34 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
           />
         ))}
 
-        {userLocation && (
-          <Marker
-            position={userLocation}
-            title="Your Location"
-            icon={{
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 10,
-              fillColor: "#4285F4",
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "white",
-            }}
-            onClick={() => {}}
-            zIndex={1000}
-          />
+        {mapLoaded && userLocation && (
+          <>
+            <Marker
+              position={userLocation}
+              title="Your Location"
+              icon={{
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 10,
+                fillColor: "#4285F4",
+                fillOpacity: 1,
+                strokeWeight: 2,
+                strokeColor: "white",
+              }}
+              onClick={() => {}}
+              zIndex={1000}
+            />
+            <Circle
+              center={userLocation}
+              radius={accuracyRadius}
+              options={{
+                fillColor: "#4285F4",
+                fillOpacity: 0.2,
+                strokeColor: "#4285F4",
+                strokeOpacity: 0.5,
+                strokeWeight: 1,
+              }}
+            />
+          </>
         )}
 
         {/* Load the review of the selected marker */}
