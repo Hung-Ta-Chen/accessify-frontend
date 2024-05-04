@@ -49,16 +49,25 @@ const LocatorButton = ({ handleNearbySearch }) => {
 
   return (
     <>
-      <button
-        onClick={onLocatorButtonClicked}
-        style={{
-          position: "absolute",
-          top: "200px",
-          left: "10px",
-          zIndex: 2000,
-        }}
-      >
-        Current Location
+      <button className="locator-button" onClick={onLocatorButtonClicked}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="#5f6368"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          className="feather feather-crosshair"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="12" cy="12" r="11" />
+          <line x1="24" x2="18" y1="12" y2="12" />
+          <line x1="6" x2="0" y1="12" y2="12" />
+          <line x1="12" x2="12" y1="6" y2="0" />
+          <line x1="12" x2="12" y1="24" y2="18" />
+        </svg>
       </button>
     </>
   );

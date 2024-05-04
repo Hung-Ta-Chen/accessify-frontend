@@ -10,8 +10,8 @@ import LocatorButton from "./LocatorButton"; // Ensure this component is correct
 import MapContext from "./MapContext";
 
 const containerStyle = {
-  width: "100vw",
-  height: "86vh",
+  width: "100%",
+  height: "100%",
 };
 
 const initialCenter = {
@@ -142,93 +142,95 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
 
   return (
     <LoadScript googleMapsApiKey={MAPS_API_KEY} libraries={LIBRARIES}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={15}
-        onLoad={onLoad}
-        onClick={onMapClick}
-      >
-        {/* Load map components here */}
-        {markers.map((marker, idx) => (
-          <Marker
-            key={idx}
-            position={{ lat: marker.lat, lng: marker.lng }}
-            title={marker.title}
-            icon={marker.icon}
-            onClick={(event) => onMarkerClick(marker)}
-          />
-        ))}
-
-        {mapLoaded && userLocation && (
-          <>
+      <div className="map-container">
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={15}
+          onLoad={onLoad}
+          onClick={onMapClick}
+        >
+          {/* Load map components here */}
+          {markers.map((marker, idx) => (
             <Marker
-              position={userLocation}
-              title="Your Location"
-              icon={{
-                path: window.google.maps.SymbolPath.CIRCLE,
-                scale: 10,
-                fillColor: "#4285F4",
-                fillOpacity: 1,
-                strokeWeight: 2,
-                strokeColor: "white",
-              }}
-              onClick={() => {}}
-              zIndex={1000}
+              key={idx}
+              position={{ lat: marker.lat, lng: marker.lng }}
+              title={marker.title}
+              icon={marker.icon}
+              onClick={(event) => onMarkerClick(marker)}
             />
-          </>
-        )}
+          ))}
 
-        {/* Load the review of the selected marker */}
-        {selectedMarker && (
-          <InfoWindow
-            position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
-            onCloseClick={(event) => setSelectedMarker(null)}
-          >
-            <div className="info-window-content">
-              <h3>{selectedMarker.title}</h3>
-              <p>Google Map Rating: {selectedMarker.googleRating} Stars</p>
-              <p>
-                Wheelchair Access Rating:{" "}
-                {Number.isInteger(
-                  infoWindowData.average_wheelchair_access_rating
-                )
-                  ? infoWindowData.average_wheelchair_access_rating
-                  : infoWindowData.average_wheelchair_access_rating.toFixed(
-                      1
-                    )}{" "}
-                Stars
-              </p>
-              <p>
-                Restroom Access Rating:{" "}
-                {Number.isInteger(infoWindowData.average_restroom_rating)
-                  ? infoWindowData.average_restroom_rating
-                  : infoWindowData.average_restroom_rating.toFixed(1)}{" "}
-                Stars
-              </p>
-              <p>
-                Overall Rating:{" "}
-                {Number.isInteger(infoWindowData.average_overall_rating)
-                  ? infoWindowData.average_overall_rating
-                  : infoWindowData.average_overall_rating.toFixed(1)}{" "}
-                Stars
-              </p>
-              <p>User Review Count: {infoWindowData.user_review_count}</p>
-              <p>Pros: </p>
-              <p>Cons: </p>
-              <div className="info-window-buttons">
-                <button onClick={() => onDisplayReviews(selectedMarker)}>
-                  Display Reviews
-                </button>
-                <button onClick={() => onAddReview(selectedMarker)}>
-                  Add Review
-                </button>
+          {mapLoaded && userLocation && (
+            <>
+              <Marker
+                position={userLocation}
+                title="Your Location"
+                icon={{
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  scale: 10,
+                  fillColor: "#4285F4",
+                  fillOpacity: 1,
+                  strokeWeight: 2,
+                  strokeColor: "white",
+                }}
+                onClick={() => {}}
+                zIndex={1000}
+              />
+            </>
+          )}
+
+          {/* Load the review of the selected marker */}
+          {selectedMarker && (
+            <InfoWindow
+              position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
+              onCloseClick={(event) => setSelectedMarker(null)}
+            >
+              <div className="info-window-content">
+                <h3>{selectedMarker.title}</h3>
+                <p>Google Map Rating: {selectedMarker.googleRating} Stars</p>
+                <p>
+                  Wheelchair Access Rating:{" "}
+                  {Number.isInteger(
+                    infoWindowData.average_wheelchair_access_rating
+                  )
+                    ? infoWindowData.average_wheelchair_access_rating
+                    : infoWindowData.average_wheelchair_access_rating.toFixed(
+                        1
+                      )}{" "}
+                  Stars
+                </p>
+                <p>
+                  Restroom Access Rating:{" "}
+                  {Number.isInteger(infoWindowData.average_restroom_rating)
+                    ? infoWindowData.average_restroom_rating
+                    : infoWindowData.average_restroom_rating.toFixed(1)}{" "}
+                  Stars
+                </p>
+                <p>
+                  Overall Rating:{" "}
+                  {Number.isInteger(infoWindowData.average_overall_rating)
+                    ? infoWindowData.average_overall_rating
+                    : infoWindowData.average_overall_rating.toFixed(1)}{" "}
+                  Stars
+                </p>
+                <p>User Review Count: {infoWindowData.user_review_count}</p>
+                <p>Pros: </p>
+                <p>Cons: </p>
+                <div className="info-window-buttons">
+                  <button onClick={() => onDisplayReviews(selectedMarker)}>
+                    Display Reviews
+                  </button>
+                  <button onClick={() => onAddReview(selectedMarker)}>
+                    Add Review
+                  </button>
+                </div>
               </div>
-            </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
-      {map && <LocatorButton handleNearbySearch={handleNearbySearch} />}
+            </InfoWindow>
+          )}
+        </GoogleMap>
+        {map && <LocatorButton handleNearbySearch={handleNearbySearch} />}
+      </div>
     </LoadScript>
   );
 }
