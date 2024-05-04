@@ -32,6 +32,7 @@ function App() {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const geocoderRef = useRef(null);
   const placesServiceRef = useRef(null);
+  const [userLocation, setUserLocation] = useState(null);
 
   // Setting in search bar
   const [checkedFilters, setCheckedFilters] = useState({
@@ -194,8 +195,10 @@ function App() {
         type: filterTypes[index],
       };
 
+      // Send the request to the service
       service.nearbySearch(request, (results, status, pagination) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          // Map each place object in result to a marker object
           const newMarkers = results.map((place) => ({
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng(),
@@ -210,7 +213,7 @@ function App() {
             type: filterTypes[index],
           }));
 
-          allMarkers = allMarkers.concat(newMarkers);
+          allMarkers.push(...newMarkers);
           // Check if pagination is available and if the next page is available
           // Also use search mode flag to control pagination
           if (searchMode == "full" && pagination && pagination.hasNextPage) {
@@ -238,7 +241,7 @@ function App() {
         }
       });
     } else {
-      // Set all the combined markers after searching all filter types
+      // Set all the combined markers after searching nearby places
       // Don't use location.lat, location.lng!!!
       allMarkers.push({
         lat: location.lat(),
@@ -274,6 +277,8 @@ function App() {
         setSearchMode,
         geocoderRef,
         placesServiceRef,
+        userLocation,
+        setUserLocation,
       }}
     >
       <div className="App">

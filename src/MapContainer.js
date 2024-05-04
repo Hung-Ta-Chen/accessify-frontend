@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -42,6 +42,8 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
     setSearchMode,
     geocoderRef,
     placesServiceRef,
+    userLocation,
+    setUserLocation,
   } = useContext(MapContext);
 
   const [infoWindowData, setInfoWindowData] = useState({
@@ -50,6 +52,27 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
     average_overall_rating: 0,
     user_review_count: 0,
   });
+
+  // Effect for setting up geolocation
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        (position) => {
+          // Set the user location to the changed position
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  }, []);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
@@ -131,6 +154,23 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
           />
         ))}
 
+        {userLocation && (
+          <Marker
+            position={userLocation}
+            title="Your Location"
+            icon={{
+              path: window.google.maps.SymbolPath.CIRCLE,
+              scale: 10,
+              fillColor: "#4285F4",
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: "white",
+            }}
+            onClick={() => {}}
+            zIndex={1000}
+          />
+        )}
+
         {/* Load the review of the selected marker */}
         {selectedMarker && (
           <InfoWindow
@@ -180,7 +220,7 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
           </InfoWindow>
         )}
       </GoogleMap>
-      {map && <LocatorButton />}
+      {map && <LocatorButton handleNearbySearch={handleNearbySearch} />}
     </LoadScript>
   );
 }

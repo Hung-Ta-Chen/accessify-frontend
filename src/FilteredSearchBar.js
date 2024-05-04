@@ -58,7 +58,9 @@ function FilteredSearchBar({ handleNearbySearch }) {
   };
 
   const onSearch = () => {
-    // Code for search
+    // Stop displaying the filters
+    setShowDropdown(false);
+
     // Check if the map is loaded
     if (!map) return;
 
