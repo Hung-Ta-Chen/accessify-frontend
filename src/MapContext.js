@@ -10,6 +10,14 @@ const MapContext = createContext({
   setCenter: () => {},
   selectedMarker: null,
   setSelectedMarker: () => {},
+  checkedFilters: null,
+  setCheckedFilters: () => {},
+  showDropdown: null,
+  setShowDropdown: () => {},
+  distance: null,
+  setDistance: () => {},
+  searchMode: null,
+  setSearchMode: () => {},
 });
 
 export default MapContext;

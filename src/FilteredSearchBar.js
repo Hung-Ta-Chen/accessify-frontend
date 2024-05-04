@@ -9,7 +9,7 @@ const iconMap = {
   hospital: "http://maps.gstatic.com/mapfiles/ms2/micons/hospitals.png",
 };
 
-function FilteredSearchBar() {
+function FilteredSearchBar({ handleNearbySearch }) {
   const {
     map,
     setMap,
@@ -19,27 +19,28 @@ function FilteredSearchBar() {
     setCenter,
     selectedMarker,
     setSelectedMarker,
+    checkedFilters,
+    setCheckedFilters,
+    showDropdown,
+    setShowDropdown,
+    distance,
+    setDistance,
+    searchMode,
+    setSearchMode,
   } = useContext(MapContext);
 
-  const [checkedBoxes, setcheckedBoxes] = useState({
-    parking: true,
-    restaurant: true,
-    park: true,
-    hospital: true,
-  });
-
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [distance, setDistance] = useState(5);
-  const [searchMode, setSearchMode] = useState("lite");
+  //const [showDropdown, setShowDropdown] = useState(false);
+  //const [distance, setDistance] = useState(5);
+  //const [searchMode, setSearchMode] = useState("lite");
   const [locationFormat, setLocationFormat] = useState("addr");
   const [searchText, setSearchText] = useState("");
-  const [nextPageToken, setNextPageToken] = useState(null); // For pagination
+  //const [nextPageToken, setNextPageToken] = useState(null); // For pagination
 
   const onFilterChange = (event) => {
     const { value, checked } = event.target;
 
     // Update the state
-    setcheckedBoxes((prevState) => ({
+    setCheckedFilters((prevState) => ({
       ...prevState,
       [value]: checked, // Computed property name
     }));
@@ -75,74 +76,14 @@ function FilteredSearchBar() {
       setCenter(location);
 
       const service = new window.google.maps.places.PlacesService(map);
-      const filterTypes = Object.keys(checkedBoxes).filter(
-        (key) => checkedBoxes[key]
+      const filterTypes = Object.keys(checkedFilters).filter(
+        (key) => checkedFilters[key]
       );
-      console.log(JSON.stringify(filterTypes));
+
       let allMarkers = [];
 
-      // Use recursive function instead of for-loop to avoid exceeding rate limit
-      const searchPlaces = (index) => {
-        if (index < filterTypes.length) {
-          const request = {
-            location: location,
-            radius: distance * 1000,
-            type: filterTypes[index],
-          };
-
-          service.nearbySearch(request, (results, status, pagination) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-              const newMarkers = results.map((place) => ({
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng(),
-                title: place.name,
-                icon: {
-                  url: iconMap[filterTypes[index]],
-                  scaledSize: new window.google.maps.Size(40, 40), // Scale the icon
-                },
-                id: place.place_id,
-                googleRating: place.rating || 0,
-                googleRatingsCount: place.user_ratings_total || 0,
-                type: filterTypes[index],
-              }));
-
-              allMarkers = allMarkers.concat(newMarkers);
-              // Check if pagination is available and if the next page is available
-              // Also use search mode flag to control pagination
-              if (
-                searchMode == "full" &&
-                pagination &&
-                pagination.hasNextPage
-              ) {
-                // If more results are available, keep fetching
-                setTimeout(() => pagination.nextPage(), 200); // respect API limit
-              } else {
-                // No more results, process next type
-                searchPlaces(index + 1); // Recurse to search next type
-              }
-            } else {
-              // Proceed to next type even if current search fails
-              searchPlaces(index + 1);
-            }
-          });
-        } else {
-          // Set all the combined markers after searching all filter types
-          // Don't use location.lat, location.lng!!!
-          allMarkers.push({
-            lat: location.lat(),
-            lng: location.lng(),
-            title: "Target Location",
-            icon: "",
-            id: null,
-            googleRating: 0,
-            googleRatingsCount: 0,
-          });
-          setMarkers(allMarkers);
-        }
-      };
-
       // Start searching from the first type
-      searchPlaces(0);
+      handleNearbySearch(location, service, filterTypes, 0, allMarkers);
     };
 
     if (locationFormat === "latlng") {
@@ -206,7 +147,7 @@ function FilteredSearchBar() {
               type="checkbox"
               onChange={onFilterChange}
               value="parking"
-              checked={checkedBoxes.parking}
+              checked={checkedFilters.parking}
             />{" "}
             Parking Spot
           </label>
@@ -215,7 +156,7 @@ function FilteredSearchBar() {
               type="checkbox"
               onChange={onFilterChange}
               value="restaurant"
-              checked={checkedBoxes.restaurant}
+              checked={checkedFilters.restaurant}
             />{" "}
             Restaurant
           </label>
@@ -224,7 +165,7 @@ function FilteredSearchBar() {
               type="checkbox"
               onChange={onFilterChange}
               value="park"
-              checked={checkedBoxes.park}
+              checked={checkedFilters.park}
             />{" "}
             Park
           </label>
@@ -233,7 +174,7 @@ function FilteredSearchBar() {
               type="checkbox"
               onChange={onFilterChange}
               value="hospital"
-              checked={checkedBoxes.hospital}
+              checked={checkedFilters.hospital}
             />{" "}
             Hospital
           </label>

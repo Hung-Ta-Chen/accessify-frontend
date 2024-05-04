@@ -32,6 +32,14 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
     setCenter,
     selectedMarker,
     setSelectedMarker,
+    checkedFilters,
+    setCheckedFilters,
+    showDropdown,
+    setShowDropdown,
+    distance,
+    setDistance,
+    searchMode,
+    setSearchMode,
   } = useContext(MapContext);
 
   const [infoWindowData, setInfoWindowData] = useState({

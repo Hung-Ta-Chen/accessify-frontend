@@ -14,6 +14,14 @@ const initialCenter = {
 
 const SERVER_URL = process.env.REACT_APP_BACKEND_URL;
 
+// Icon map for markers
+const iconMap = {
+  parking: "http://maps.gstatic.com/mapfiles/ms2/micons/parkinglot.png",
+  restaurant: "http://maps.gstatic.com/mapfiles/ms2/micons/restaurant.png",
+  park: "http://maps.gstatic.com/mapfiles/ms2/micons/tree.png",
+  hospital: "http://maps.gstatic.com/mapfiles/ms2/micons/hospitals.png",
+};
+
 // Bind the modals to the app
 ReactModal.setAppElement("#root");
 
@@ -22,6 +30,17 @@ function App() {
   const [center, setCenter] = useState(initialCenter);
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  // Setting in search bar
+  const [checkedFilters, setCheckedFilters] = useState({
+    parking: true,
+    restaurant: true,
+    park: true,
+    hospital: true,
+  });
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [distance, setDistance] = useState(1);
+  const [searchMode, setSearchMode] = useState("lite");
 
   const [addReviewModalIsOpen, setAddReviewModalIsOpen] = useState(false);
   const [reviewsModalIsOpen, setReviewsModalIsOpen] = useState(false);
@@ -155,6 +174,82 @@ function App() {
     }
   };
 
+  // Function for searching nearby places with Places API
+  // Use recursive function for searching nearby places instead of for-loop to avoid exceeding rate limit
+  const searchNearbyPlaces = (
+    location,
+    service,
+    filterTypes,
+    index,
+    allMarkers
+  ) => {
+    if (index < filterTypes.length) {
+      // Construct a request object
+      const request = {
+        location: location,
+        radius: distance * 1000, // in meters
+        type: filterTypes[index],
+      };
+
+      service.nearbySearch(request, (results, status, pagination) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          const newMarkers = results.map((place) => ({
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+            title: place.name,
+            icon: {
+              url: iconMap[filterTypes[index]],
+              scaledSize: new window.google.maps.Size(40, 40), // Scale the icon
+            },
+            id: place.place_id,
+            googleRating: place.rating || 0,
+            googleRatingsCount: place.user_ratings_total || 0,
+            type: filterTypes[index],
+          }));
+
+          allMarkers = allMarkers.concat(newMarkers);
+          // Check if pagination is available and if the next page is available
+          // Also use search mode flag to control pagination
+          if (searchMode == "full" && pagination && pagination.hasNextPage) {
+            // If more results are available, keep fetching
+            setTimeout(() => pagination.nextPage(), 200); // respect API limit
+          } else {
+            // No more results, process next type
+            searchNearbyPlaces(
+              location,
+              service,
+              filterTypes,
+              index + 1,
+              allMarkers
+            ); // Recurse to search next type
+          }
+        } else {
+          // Proceed to next type even if current search fails
+          searchNearbyPlaces(
+            location,
+            service,
+            filterTypes,
+            index + 1,
+            allMarkers
+          );
+        }
+      });
+    } else {
+      // Set all the combined markers after searching all filter types
+      // Don't use location.lat, location.lng!!!
+      allMarkers.push({
+        lat: location.lat(),
+        lng: location.lng(),
+        title: "Target Location",
+        icon: "",
+        id: null,
+        googleRating: 0,
+        googleRatingsCount: 0,
+      });
+      setMarkers(allMarkers);
+    }
+  };
+
   return (
     <MapContext.Provider
       value={{
@@ -166,13 +261,22 @@ function App() {
         setCenter,
         selectedMarker,
         setSelectedMarker,
+        checkedFilters,
+        setCheckedFilters,
+        showDropdown,
+        setShowDropdown,
+        distance,
+        setDistance,
+        searchMode,
+        setSearchMode,
       }}
     >
       <div className="App">
-        <Header />
+        <Header handleNearbySearch={searchNearbyPlaces} />
         <MapContainer
           onAddReview={handleOpenAddReviewModal}
           onDisplayReviews={handleOpenReviewsModal}
+          handleNearbySearch={searchNearbyPlaces}
         />
         <ReviewsModal
           isOpen={reviewsModalIsOpen}
