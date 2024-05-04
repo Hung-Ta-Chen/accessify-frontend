@@ -20,6 +20,7 @@ const initialCenter = {
 
 const MAPS_API_KEY = process.env.REACT_APP_MAPS_API_KEY;
 const SERVER_URL = process.env.REACT_APP_BACKEND_URL;
+const LIBRARIES = ["places"];
 
 function MapContainer({ onAddReview, onDisplayReviews }) {
   const {
@@ -90,7 +91,7 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
   };
 
   return (
-    <LoadScript googleMapsApiKey={MAPS_API_KEY} libraries={["places"]}>
+    <LoadScript googleMapsApiKey={MAPS_API_KEY} libraries={LIBRARIES}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
