@@ -3,10 +3,10 @@ import "./index.css";
 import MapContext from "./MapContext";
 
 const iconMap = {
-  0: "http://maps.gstatic.com/mapfiles/ms2/micons/parkinglot.png",
-  1: "http://maps.gstatic.com/mapfiles/ms2/micons/restaurant.png",
-  2: "http://maps.gstatic.com/mapfiles/ms2/micons/tree.png",
-  3: "http://maps.gstatic.com/mapfiles/ms2/micons/hospitals.png",
+  parking: "http://maps.gstatic.com/mapfiles/ms2/micons/parkinglot.png",
+  restaurant: "http://maps.gstatic.com/mapfiles/ms2/micons/restaurant.png",
+  park: "http://maps.gstatic.com/mapfiles/ms2/micons/tree.png",
+  hospital: "http://maps.gstatic.com/mapfiles/ms2/micons/hospitals.png",
 };
 
 function FilteredSearchBar() {
@@ -78,6 +78,7 @@ function FilteredSearchBar() {
       const filterTypes = Object.keys(checkedBoxes).filter(
         (key) => checkedBoxes[key]
       );
+      console.log(JSON.stringify(filterTypes));
       let allMarkers = [];
 
       // Use recursive function instead of for-loop to avoid exceeding rate limit
@@ -96,7 +97,7 @@ function FilteredSearchBar() {
                 lng: place.geometry.location.lng(),
                 title: place.name,
                 icon: {
-                  url: iconMap[index],
+                  url: iconMap[filterTypes[index]],
                   scaledSize: new window.google.maps.Size(40, 40), // Scale the icon
                 },
                 id: place.place_id,
