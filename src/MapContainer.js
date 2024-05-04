@@ -19,7 +19,7 @@ const initialCenter = {
 };
 
 const MAPS_API_KEY = process.env.REACT_APP_MAPS_API_KEY;
-const SERVER_URL = "http://127.0.0.1:8000";
+const SERVER_URL = process.env.REACT_APP_BACKEND_URL;
 
 function MapContainer({ onAddReview, onDisplayReviews }) {
   const {
