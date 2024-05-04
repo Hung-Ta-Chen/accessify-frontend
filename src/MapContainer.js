@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -55,6 +55,7 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
   });
 
   const [accuracyRadius, setAccuracyRadius] = useState(0);
+  const accuracyCircleRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
   // Effect for setting up geolocation
@@ -77,7 +78,7 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
     } else if (mapLoaded) {
       alert("Geolocation is not supported by your browser.");
     }
-  }, [mapLoaded, setUserLocation, setAccuracyRadius]);
+  }, [mapLoaded, setUserLocation, setAccuracyRadius, map]);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
@@ -135,7 +136,6 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
       }
 
       // Set the selected marker
-
       setSelectedMarker(marker);
     }
   };
@@ -175,17 +175,6 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
               }}
               onClick={() => {}}
               zIndex={1000}
-            />
-            <Circle
-              center={userLocation}
-              radius={accuracyRadius}
-              options={{
-                fillColor: "#4285F4",
-                fillOpacity: 0.2,
-                strokeColor: "#4285F4",
-                strokeOpacity: 0.5,
-                strokeWeight: 1,
-              }}
             />
           </>
         )}

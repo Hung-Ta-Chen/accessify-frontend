@@ -8,8 +8,8 @@ import AddReviewModal from "./AddReviewModal";
 import ReviewsModal from "./ReviewsModal";
 
 const initialCenter = {
-  lat: -34.397,
-  lng: 150.644,
+  lat: 38.5382,
+  lng: -121.7617,
 };
 
 const SERVER_URL = process.env.REACT_APP_BACKEND_URL;
