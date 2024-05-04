@@ -22,7 +22,7 @@ const MAPS_API_KEY = process.env.REACT_APP_MAPS_API_KEY;
 const SERVER_URL = process.env.REACT_APP_BACKEND_URL;
 const LIBRARIES = ["places"];
 
-function MapContainer({ onAddReview, onDisplayReviews }) {
+function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
   const {
     map,
     setMap,
@@ -66,23 +66,24 @@ function MapContainer({ onAddReview, onDisplayReviews }) {
     }
   };
 
-  // Function to handle map clicks and add markers
+  // Function to handle map clicks
+  // Center the map to the click and display nearby places
   const onMapClick = (event) => {
-    /*
-    setMarkers((currentMarkers) => [
-      ...currentMarkers,
-      {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
-        title: "Clicked",
-        icon: "",
-        id: "test",
-        googleRating: 0,
-        googleRatingsCount: 0,
-        type: "",
-      },
-    ]);
-    */
+    const handleResults = (location) => {
+      setCenter(location);
+
+      const service = placesServiceRef.current;
+      const filterTypes = Object.keys(checkedFilters).filter(
+        (key) => checkedFilters[key]
+      );
+
+      let allMarkers = [];
+
+      // Start searching from the first type
+      handleNearbySearch(location, service, filterTypes, 0, allMarkers);
+    };
+
+    handleResults(event.latLng);
   };
 
   const onMarkerClick = async (marker) => {
