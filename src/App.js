@@ -185,7 +185,8 @@ function App() {
     service,
     filterTypes,
     index,
-    allMarkers
+    allMarkers,
+    showTargetLocation = true
   ) => {
     if (index < filterTypes.length) {
       // Construct a request object
@@ -226,7 +227,8 @@ function App() {
               service,
               filterTypes,
               index + 1,
-              allMarkers
+              allMarkers,
+              showTargetLocation
             ); // Recurse to search next type
           }
         } else {
@@ -236,22 +238,25 @@ function App() {
             service,
             filterTypes,
             index + 1,
-            allMarkers
+            allMarkers,
+            showTargetLocation
           );
         }
       });
     } else {
       // Set all the combined markers after searching nearby places
       // Don't use location.lat, location.lng!!!
-      allMarkers.push({
-        lat: location.lat(),
-        lng: location.lng(),
-        title: "Target Location",
-        icon: "",
-        id: null,
-        googleRating: 0,
-        googleRatingsCount: 0,
-      });
+      if (showTargetLocation) {
+        allMarkers.push({
+          lat: location.lat(),
+          lng: location.lng(),
+          title: "Target Location",
+          icon: "",
+          id: null,
+          googleRating: 0,
+          googleRatingsCount: 0,
+        });
+      }
       setMarkers(allMarkers);
     }
   };

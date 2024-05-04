@@ -77,7 +77,7 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
     } else if (mapLoaded) {
       alert("Geolocation is not supported by your browser.");
     }
-  }, [mapLoaded, setUserLocation]);
+  }, [mapLoaded, setUserLocation, setAccuracyRadius]);
 
   // Function to handle the loading of the map
   const onLoad = (mapInstance) => {
