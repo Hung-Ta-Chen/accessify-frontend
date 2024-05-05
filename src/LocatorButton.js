@@ -49,7 +49,11 @@ const LocatorButton = ({ handleNearbySearch }) => {
 
   return (
     <>
-      <button className="locator-button" onClick={onLocatorButtonClicked}>
+      <button
+        className="locator-button"
+        onClick={onLocatorButtonClicked}
+        title={"Locate me"}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

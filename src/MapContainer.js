@@ -100,8 +100,6 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
   // Center the map to the click and display nearby places
   const onMapClick = (event) => {
     const handleResults = (location) => {
-      setCenter(location);
-
       const service = placesServiceRef.current;
       const filterTypes = Object.keys(checkedFilters).filter(
         (key) => checkedFilters[key]
@@ -111,6 +109,8 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
 
       // Start searching from the first type
       handleNearbySearch(location, service, filterTypes, 0, allMarkers);
+
+      setCenter(location);
     };
 
     handleResults(event.latLng);
