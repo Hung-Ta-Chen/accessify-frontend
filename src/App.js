@@ -6,6 +6,7 @@ import MapContext from "./MapContext";
 import ReactModal from "react-modal";
 import AddReviewModal from "./AddReviewModal";
 import ReviewsModal from "./ReviewsModal";
+import NavigationSidebar from "./NavigationSidebar";
 
 const initialCenter = {
   lat: 38.5382,
@@ -287,22 +288,25 @@ function App() {
       }}
     >
       <div className="App">
-        <Header handleNearbySearch={searchNearbyPlaces} />
-        <MapContainer
-          onAddReview={handleOpenAddReviewModal}
-          onDisplayReviews={handleOpenReviewsModal}
-          handleNearbySearch={searchNearbyPlaces}
-        />
-        <ReviewsModal
-          isOpen={reviewsModalIsOpen}
-          onRequestClose={handleCloseReviewsModal}
-          reviews={reviews} // Pass the reviews for the selected marker
-        />
-        <AddReviewModal
-          isOpen={addReviewModalIsOpen}
-          onRequestClose={handleCloseAddReviewModal}
-          onReviewSubmit={handleAddReviewSubmit}
-        />
+        <NavigationSidebar />
+        <div className="main-content">
+          <Header handleNearbySearch={searchNearbyPlaces} />
+          <MapContainer
+            onAddReview={handleOpenAddReviewModal}
+            onDisplayReviews={handleOpenReviewsModal}
+            handleNearbySearch={searchNearbyPlaces}
+          />
+          <ReviewsModal
+            isOpen={reviewsModalIsOpen}
+            onRequestClose={handleCloseReviewsModal}
+            reviews={reviews} // Pass the reviews for the selected marker
+          />
+          <AddReviewModal
+            isOpen={addReviewModalIsOpen}
+            onRequestClose={handleCloseAddReviewModal}
+            onReviewSubmit={handleAddReviewSubmit}
+          />
+        </div>
       </div>
     </MapContext.Provider>
   );
