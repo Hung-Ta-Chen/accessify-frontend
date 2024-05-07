@@ -1,10 +1,23 @@
-import React from "react";
+import { React, useState } from "react";
 import "./NavigationSidebar.css";
 
-function NavigationSidebar() {
+function NavigationSidebar({ activeSidebarWindow, setActiveSidebarWindow }) {
+  const handleClick = (buttonName) => {
+    setActiveSidebarWindow(buttonName);
+  };
+
   return (
     <div className="navigation-sidebar">
-      <button className="navigation-button" aria-label="User Profile">
+      <button
+        className={
+          activeSidebarWindow === "profile"
+            ? "navigation-button active"
+            : "navigation-button"
+        }
+        aria-label="User Profile"
+        title="User Profile"
+        onClick={() => handleClick("profile")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -19,7 +32,16 @@ function NavigationSidebar() {
           <circle cx="12" cy="7" r="4" />
         </svg>
       </button>
-      <button className="navigation-button" aria-label="Chatbot">
+      <button
+        className={
+          activeSidebarWindow === "chat"
+            ? "navigation-button active"
+            : "navigation-button"
+        }
+        aria-label="Chatbot"
+        title="Chatbot"
+        onClick={() => handleClick("chat")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -33,7 +55,16 @@ function NavigationSidebar() {
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
       </button>
-      <button className="navigation-button" aria-label="Nearby Ranking">
+      <button
+        className={
+          activeSidebarWindow === "nearby"
+            ? "navigation-button active"
+            : "navigation-button"
+        }
+        aria-label="Nearby Ranking"
+        title="Nearby"
+        onClick={() => handleClick("nearby")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -49,7 +80,16 @@ function NavigationSidebar() {
           <line x1="16" y1="6" x2="16" y2="22" />
         </svg>
       </button>
-      <button className="navigation-button" aria-label="Saved Locations">
+      <button
+        className={
+          activeSidebarWindow === "saved"
+            ? "navigation-button active"
+            : "navigation-button"
+        }
+        aria-label="Saved Locations"
+        title="Saved"
+        onClick={() => handleClick("saved")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -63,7 +103,16 @@ function NavigationSidebar() {
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
         </svg>
       </button>
-      <button className="navigation-button" aria-label="Settings">
+      <button
+        className={
+          activeSidebarWindow === "settings"
+            ? "navigation-button active"
+            : "navigation-button"
+        }
+        aria-label="Settings"
+        title="Settings"
+        onClick={() => handleClick("settings")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

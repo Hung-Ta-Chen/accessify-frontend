@@ -33,3 +33,14 @@
 .navigation-button:hover {
   background-color: #e0e0e0; 
 }
+
+.navigation-button.active{
+  color: #4285F4;
+}
+
+.navigation-button.active svg {
+  fill: #4285F4; 
+  transition: fill 0.15s ease-in-out;
+}
+
+

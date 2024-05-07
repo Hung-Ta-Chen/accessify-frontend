@@ -1,0 +1,82 @@
+.chat-window {
+  position: fixed;
+  bottom: 0;
+  left: 60px;  
+  width: 450px;
+  height: 80vh;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  transform: translateY(0%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 4;  
+  box-sizing: border-box;
+  padding: 20px; 
+}
+
+.chat-window.active {
+  transform: translateY(100%);
+}
+
+.chat-content {
+  overflow-y: auto;
+  height: calc(100% - 50px); /* Adjust height based on your chat input height */
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-input-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  background-color: white;
+  bottom: 20px;
+}
+
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  background-color: #fff; /* Set the background color same as the input field */
+  border-radius: 15px;
+  overflow: hidden; /* Hides anything that goes beyond the border radius */
+  border: 2px solid #ccc;
+}
+
+.chat-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  padding: 5px 5px 5px 15px;
+  font-size: 15px;
+}
+
+.send-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 10px 5px 10px;
+}
+
+.send-button svg {
+  fill: #4285F4; /* Color of the icon */
+}
+
+
+.close-button {
+  position: absolute;
+  top: 13px;    
+  right: 7px;  
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #999;  
+  font-size: 16px;
+}
+
+.close-button:hover {
+  color: #333;  
+}

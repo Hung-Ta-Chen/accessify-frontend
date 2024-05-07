@@ -7,6 +7,7 @@ import ReactModal from "react-modal";
 import AddReviewModal from "./AddReviewModal";
 import ReviewsModal from "./ReviewsModal";
 import NavigationSidebar from "./NavigationSidebar";
+import ChatWindow from "./ChatWindow";
 
 const initialCenter = {
   lat: 38.5382,
@@ -27,6 +28,7 @@ const iconMap = {
 ReactModal.setAppElement("#root");
 
 function App() {
+  // States used across the app
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState(initialCenter);
   const [markers, setMarkers] = useState([]);
@@ -34,6 +36,7 @@ function App() {
   const geocoderRef = useRef(null);
   const placesServiceRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
+  const [activeSidebarWindow, setActiveSidebarWindow] = useState("");
 
   // Setting in search bar
   const [checkedFilters, setCheckedFilters] = useState({
@@ -179,6 +182,10 @@ function App() {
     }
   };
 
+  const handleCloseSidebarWindow = () => {
+    setActiveSidebarWindow(""); // Clears any active sidebar window to close it
+  };
+
   // Function for searching nearby places with Places API
   // Use recursive function for searching nearby places instead of for-loop to avoid exceeding rate limit
   const searchNearbyPlaces = (
@@ -288,7 +295,10 @@ function App() {
       }}
     >
       <div className="App">
-        <NavigationSidebar />
+        <NavigationSidebar
+          activeSidebarWindow={activeSidebarWindow}
+          setActiveSidebarWindow={setActiveSidebarWindow}
+        />
         <div className="main-content">
           <Header handleNearbySearch={searchNearbyPlaces} />
           <MapContainer
@@ -307,6 +317,12 @@ function App() {
             onReviewSubmit={handleAddReviewSubmit}
           />
         </div>
+        {
+          <ChatWindow
+            handleClose={handleCloseSidebarWindow}
+            isActive={activeSidebarWindow === "chat"}
+          />
+        }
       </div>
     </MapContext.Provider>
   );
