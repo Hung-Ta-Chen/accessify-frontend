@@ -2,24 +2,64 @@ import { React, useState } from "react";
 import "./ChatWindow.css";
 
 function ChatWindow({ handleClose, isActive }) {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      id: 0,
+      sender: "chatbot",
+      text: "Hello! What can I help you today?",
+      timestamp: new Date(),
+    },
+  ]);
   const [newMessage, setNewMessage] = useState("");
 
   // Function for sending a new message
   const sendMessage = (event) => {
     if (newMessage != "") {
       event.preventDefault(); // Prevent the reload of the page
-      setMessages([messages, ...messages]);
+      setMessages([
+        ...messages,
+        {
+          id: messages.length,
+          sender: "user",
+          text: newMessage,
+          timestamp: new Date(),
+        },
+      ]);
       /* The part for sending the message list to the backend */
-      console.log(newMessage);
       setNewMessage("");
     }
   };
 
+  const handleCloseWindow = () => {
+    handleClose();
+    /*
+    setMessages([
+      {
+        id: 0,
+        sender: "chatbot",
+        text: "Hello! What can I help you today?",
+        timestamp: new Date(),
+      },
+    ]); // Clear all the messages
+    */
+  };
+
   return (
     <div className={isActive ? "chat-window" : "chat-window active"}>
+      <div className="chat-header">Chat Support</div>
       <div className="chat-content">
-        {/* Chat messages would be dynamically listed here */}
+        {messages.map((message) => {
+          return (
+            <div
+              key={message.id}
+              className={`message ${
+                message.sender === "user" ? "user-message" : "chatbot-message"
+              }`}
+            >
+              {message.text}
+            </div>
+          );
+        })}
       </div>
       <div className="chat-input-container">
         <form className="chat-input-bar" onSubmit={sendMessage}>
@@ -45,7 +85,11 @@ function ChatWindow({ handleClose, isActive }) {
           </button>
         </form>
       </div>
-      <button className="close-button" onClick={handleClose} title="Close">
+      <button
+        className="close-button"
+        onClick={handleCloseWindow}
+        title="Close"
+      >
         <svg
           width="24"
           height="24"
