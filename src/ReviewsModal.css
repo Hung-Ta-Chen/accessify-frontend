@@ -1,0 +1,12 @@
+/* If you want a scrollbar within the reviews modal */
+.reviews-modal-content {
+  max-height: 400px; /* Adjust to suitable height */
+  overflow-y: auto; /* Enables scrollbar for overflow content */
+}
+
+/* Individual review container styles */
+.review {
+  border-bottom: 1px solid #ccc; /* Separator between reviews */
+  padding: 10px; /* Padding around review content */
+  margin-bottom: 10px; /* Spacing between reviews */
+}

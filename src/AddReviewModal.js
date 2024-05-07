@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ReactModal from "react-modal";
+import "./AddReviewModal.css";
 
 function AddReviewModal({ isOpen, onRequestClose, onReviewSubmit }) {
   // Define fields for review

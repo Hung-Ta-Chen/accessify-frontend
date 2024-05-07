@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import "./index.css";
+import "./FilteredSearchBar.css";
 import MapContext from "./MapContext";
 
 function FilteredSearchBar({ handleNearbySearch }) {

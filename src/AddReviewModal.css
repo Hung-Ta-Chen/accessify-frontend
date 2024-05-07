@@ -1,0 +1,26 @@
+.add-review-modal select {
+  width: 100%; /* Full width within the modal */
+  margin-bottom: 10px; /* Spacing between fields */
+}
+
+.add-review-modal input {
+  width: 98%; /* Full width within the modal */
+  margin-bottom: 10px; /* Spacing between fields */
+}
+
+.add-review-modal textarea {
+  width: 98%; /* Full width within the modal */
+  margin-bottom: 10px; /* Spacing between fields */
+  height: 150px
+}
+
+/* Button styles */
+.add-review-modal button {
+  margin-top: 10px; 
+  margin-right: 10px;
+  padding: 10px 20px; /* Padding for clickable area */
+  border: none; /* No border for buttons */
+  background-color: #4285F4; /* Google blue color for consistency */
+  color: white;
+  cursor: pointer;
+}

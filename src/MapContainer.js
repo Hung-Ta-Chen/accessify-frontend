@@ -8,6 +8,7 @@ import {
 } from "@react-google-maps/api";
 import LocatorButton from "./LocatorButton"; // Ensure this component is correctly imported
 import MapContext from "./MapContext";
+import "./MapContainer.css";
 
 const containerStyle = {
   width: "100%",

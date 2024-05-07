@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Marker } from "@react-google-maps/api";
 import MapContext from "./MapContext";
+import "./LocatorButton.css";
 
 const LocatorButton = ({ handleNearbySearch }) => {
   const {
