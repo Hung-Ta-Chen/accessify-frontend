@@ -1,5 +1,6 @@
 import React from "react";
 import ReactModal from "react-modal";
+import "./ReviewsModal.css";
 
 function ReviewsModal({ isOpen, onRequestClose, reviews }) {
   return (

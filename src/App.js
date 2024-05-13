@@ -63,32 +63,36 @@ function App() {
     // Communicate with backend
 
     try {
-      // Fetch the place by place_id to get the database ID
+      // Fetch the place details by place_id
       const placeResponse = await fetch(
-        `${SERVER_URL}/api/places/?place_id=${marker.id}`
+        `${SERVER_URL}/api/places/${marker.id}`
       );
-      if (!placeResponse.ok) {
+      if (placeResponse.status === 404) {
+        alert("Place not found. No reviews available.");
         setReviews([]);
+        return;
+      }
+      if (!placeResponse.ok) {
+        throw new Error("Failed to fetch place details");
       }
 
-      const places = await placeResponse.json();
-      if (places.length === 0) {
-        alert("No review found");
-        setReviews([]); // Exit if no place is found
-      } else {
-        // Assuming the first result is the correct one
-        const placeId = places[0].id;
+      const placeData = await placeResponse.json();
 
-        // Fetch reviews for the found place ID
-        const reviewResponse = await fetch(
-          `${SERVER_URL}/api/reviews/?place=${placeId}`
-        );
-        if (!reviewResponse.ok) throw new Error("Failed to fetch reviews");
-
-        const reviewsData = await reviewResponse.json();
-        setReviews(reviewsData); // Set the fetched reviews into state
+      // Fetch reviews for the found place ID
+      const reviewResponse = await fetch(
+        `${SERVER_URL}/api/places/${placeData.place_id}/reviews`
+      );
+      if (reviewResponse.status === 404) {
+        alert("No reviews found for this place.");
+        setReviews([]);
+        return;
+      }
+      if (!reviewResponse.ok) {
+        throw new Error("Failed to fetch reviews");
       }
 
+      const reviewsData = await reviewResponse.json();
+      setReviews(reviewsData); // Set the fetched reviews into state
       setReviewsModalIsOpen(true); // Open the reviews modal
     } catch (error) {
       console.error("Error fetching place or reviews:", error);
@@ -109,30 +113,12 @@ function App() {
     try {
       // Check if the place exists or add it
       let placeResponse = await fetch(
-        SERVER_URL + `/api/places/?place_id=${selectedMarker.id}`
+        `${SERVER_URL}/api/places/${selectedMarker.id}`
       );
 
-      let places = await placeResponse.json();
-
-      let placeId;
-      if (places.length === 0) {
-        // Place does not exist, create it
-        console.log(
-          JSON.stringify({
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: {
-              name: selectedMarker.title,
-              lat: selectedMarker.lat,
-              lng: selectedMarker.lng,
-              place_id: selectedMarker.id,
-              place_type: selectedMarker.type,
-            },
-          })
-        );
-        placeResponse = await fetch(SERVER_URL + "/api/places/", {
+      if (placeResponse.status === 404) {
+        // If the place is not found, try to create it
+        placeResponse = await fetch(`${SERVER_URL}/api/places`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -147,29 +133,29 @@ function App() {
         });
 
         if (!placeResponse.ok) throw new Error("Failed to create place");
-        const newPlace = await placeResponse.json();
-        placeId = newPlace.id;
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      } else {
-        // Place exists
-        placeId = places[0].id;
       }
 
+      const placeData = await placeResponse.json();
+      const placeId = placeData.place_id;
+
       // Submit the review
-      const reviewResponse = await fetch(SERVER_URL + "/api/reviews/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          place: placeId,
-          username: reviewData.username,
-          wheelchair_rating: reviewData.wheelchairRating,
-          restroom_rating: reviewData.restroomRating,
-          overall_rating: reviewData.overallRating,
-          comment: reviewData.comments,
-        }),
-      });
+      const reviewResponse = await fetch(
+        `${SERVER_URL}/api/places/${placeId}/reviews`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            place: placeId,
+            username: reviewData.username,
+            wheelchair_rating: reviewData.wheelchairRating,
+            restroom_rating: reviewData.restroomRating,
+            overall_rating: reviewData.overallRating,
+            comment: reviewData.comments,
+          }),
+        }
+      );
       if (reviewResponse.ok) {
         alert("Review successfully added!");
         handleCloseAddReviewModal();

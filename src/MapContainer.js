@@ -125,19 +125,39 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
 
         // Fetch reviews for the found place ID
         const statsResponse = await fetch(
-          `${SERVER_URL}/api/places/${placeId}/stats/`
+          `${SERVER_URL}/api/places/${placeId}/stats`
         );
+        if (statsResponse.status === 404) {
+          // Set all stats to 0 if place id not found
+          setInfoWindowData({
+            average_wheelchair_access_rating: 0,
+            average_restroom_rating: 0,
+            average_overall_rating: 0,
+            user_review_count: 0,
+          });
+          setSelectedMarker(marker);
+          return;
+        }
         if (!statsResponse.ok) throw new Error("Failed to fetch reviews");
 
         const statsData = await statsResponse.json();
-        setInfoWindowData(statsData);
+        const parsedStatsData = {
+          average_wheelchair_access_rating: parseFloat(
+            statsData.average_wheelchair_access_rating
+          ),
+          average_restroom_rating: parseFloat(
+            statsData.average_restroom_rating
+          ),
+          average_overall_rating: parseFloat(statsData.average_overall_rating),
+          user_review_count: statsData.user_review_count,
+        };
+        setInfoWindowData(parsedStatsData);
+        // Set the selected marker
+        setSelectedMarker(marker);
       } catch (error) {
         console.error("Error fetching place or reviews:", error);
         alert("Error fetching place or reviews");
       }
-
-      // Set the selected marker
-      setSelectedMarker(marker);
     }
   };
 
