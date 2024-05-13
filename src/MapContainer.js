@@ -204,7 +204,10 @@ function MapContainer({ onAddReview, onDisplayReviews, handleNearbySearch }) {
           {/* Load the review of the selected marker */}
           {selectedMarker && (
             <InfoWindow
-              position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
+              position={{
+                lat: selectedMarker.lat + 0.0006,
+                lng: selectedMarker.lng,
+              }}
               onCloseClick={(event) => setSelectedMarker(null)}
             >
               <div className="info-window-content">

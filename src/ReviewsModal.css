@@ -1,10 +1,11 @@
 /* Styles for the reviews content within the modal */
-.ReactModal__Overlay {
+.ReviewsModal__Overlay {
     background-color: rgba(0, 0, 0, 0.75); /* Dim the background */
     z-index: 1000; /* Higher than anything else in the app */
 }
   
-.ReactModal__Content {
+.ReviewsModal__Content {
+    position: relative; /* Needed for absolute positioning of children */
     top: 50%;
     left: 50%;
     right: auto;
@@ -17,17 +18,23 @@
     outline: none;
     padding: 20px;
     width: 80%; /* Set a fixed width */
-    max-width: 800px; /* Limit the maximum width to 800px */
+    max-width: 600px; /* Limit the maximum width to 800px */
     height: auto; /* Adjust height as necessary */
     max-height: 80vh; /* Maximum height to ensure it fits in most screens */
 }
 
 .reviews-modal-content {
-max-height: 400px; /* Suitable height for content scroll */
-overflow-y: auto; /* Scrollbar for overflow content */
-padding: 20px; /* Padding inside the modal content */
-font-family: Roboto, Arial, sans-serif; /* Google's default font */
-color: #333; /* Dark grey text for better readability */
+    max-height: calc(90% - 60px); /* Suitable height for content scroll */
+    overflow-y: auto; /* Scrollbar for overflow content */
+    padding: 20px; /* Padding inside the modal content */
+    font-family: Roboto, Arial, sans-serif; /* Google's default font */
+    color: #333; /* Dark grey text for better readability */
+    border-radius: 8px;
+}
+
+.reviews-modal-content > h2 {
+    color: #4285F4;
+    padding: 0 10px 10px 10px;
 }
 
 /* Individual review container styles */
@@ -54,11 +61,20 @@ color: #333; /* Dark grey text for better readability */
 }
 
 .reviews-modal-content > button {
-    background-color: #4285f4; /* Google blue for buttons */
-    color: white;
+    position: absolute;  /* Positioning relative to the modal */
+    top: 10px;  /* Close to the top-right corner */
+    right: 10px; /* Margin from the right */
     border: none;
-    padding: 10px 20px;
+    background: none;
     cursor: pointer;
-    border-radius: 4px; /* Rounded corners for button */
-    margin-top: 10px; /* Space above the button */
+    width: 32px; /* Fixed size for the button */
+    height: 32px; /* Fixed size for the button */
+    display: flex; /* Aligns the icon nicely in the center */
+    align-items: center; /* Center the icon vertically */
+    justify-content: center; /* Center the icon horizontally */
+    padding: 0; /* Remove padding */
 }
+
+.reviews-modal-content > button:hover {
+    opacity: 0.8;
+  }
